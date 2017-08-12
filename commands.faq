@@ -1,5 +1,5 @@
 user:hduser
-git checkout -b featureA
-vim  commands.faq
-git add commands.faq
-git commit -am 'work by hduser on featureA'
+- git checkout -b featureA
+- vim  commands.faq
+- git add commands.faq  #only for new files
+- git commit -am 'work by hduser on featureA'  #Note that -a option here automatically stages modified/deleted files. New files still need to be added as in the previous step
