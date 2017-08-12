@@ -1,6 +1,15 @@
 user:hduser
-- git checkout -b featureA
+- git checkout -b featureA  #if the branch is created on the server(not remote) then the -b option is not required.
 - vim  commands.faq
+- git status
 - git add commands.faq  #only for new files
 - git commit -am 'work by hduser on featureA'  #Note that -a option here automatically stages modified/deleted files. New files still need to be added as in the previous step
 - git push -u origin featureA   #the -u option is required for argument less pull command
+
+
+The above is one basic work flow where user checks out, makes changes and checks in.
+
+checkout <feature> - encodes git checkout <feature>
+make changes
+examine - identifies the list of packages modified and asks for confirmation for each package. Package names must begin with a certain pattern?
+checkin <feature> <comments> - updates package version file for every package changed, 
