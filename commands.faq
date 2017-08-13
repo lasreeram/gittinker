@@ -1,5 +1,6 @@
 user:hduser
-- git checkout -b featureA  #if the branch is created on the server(not remote) then the -b option is not required.
+- get fetch -all   #this will fetch all branches on remote
+- git checkout featureA  #if the branch is created on the server(remote) then the -b option is not required.
 - vim  commands.faq
 - git status
 - git add commands.faq  #only for new files
@@ -9,7 +10,7 @@ user:hduser
 
 The above is one basic work flow where user checks out, makes changes and checks in.
 
-checkout <feature> - encodes git checkout <feature>
+checkout <feature> - encodes git fetch --all; git checkout <feature>
 make changes
 examine - identifies the list of packages modified and asks for confirmation for each package. Package names must begin with a certain pattern?
-checkin <feature> <comments> - updates package version file for every package changed, 
+checkin <feature> <comments> - updates package version file for every package changed, does a commit without -a option, does a push to the server.
