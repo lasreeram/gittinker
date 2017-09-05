@@ -80,6 +80,8 @@ def main():
             fd = open(filename, "w+")
             fd.write(versionStr)
             fd.close()
+            add_pkg_version_cmd = ["git", "add", filename]
+            retCode,retErr,retStr = execgit.execCommand(add_pkg_version_cmd)
         else:
             print("Error: " + filename + " not found")
             sys.exit(-1)
