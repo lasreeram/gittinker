@@ -1,0 +1,24 @@
+#!/usr/bin/env python
+from MyExecPkg import ExecGit
+import sys;
+
+def print_help():
+    print("help:")
+    print("\tgit_remove <file>\n")
+    print("<file>: file to be removed from staging area. If file is a folder all files under the folder will be removed")
+
+def main():
+    if( len(sys.argv) != 2 ):
+        print_help()
+        sys.exit(1)
+
+    #initialize objects
+    execgit = ExecGit()
+
+    filename = sys.argv[1]
+    #fetch all command
+    git_remove_cmd = ["git", "reset", "HEAD", filename ]
+    execgit.execCommand(git_remove_cmd)
+    print("\n***** " + filename + " removed *****\n" )
+
+main()

@@ -1,0 +1,122 @@
+#!/usr/bin/env python
+from MyExecPkg import ExecGit
+import sys;
+
+def print_help():
+   print( "help:" )
+   print( "\tgit_examine\n" )
+   print( "no arguments" )
+
+
+def main():
+
+    if(len(sys.argv) > 1 ):
+        print_help()
+        sys.exit(1)
+
+    #initialize objects
+    execgit = ExecGit()
+
+    #git status commamnd - to identify files to be added
+    git_status_cmd = ["git", "status", "--porcelain"]
+    retCode, retErr, retStr = execgit.execCommand(git_status_cmd)
+    listOfFilesAndStatus = retStr.split('\n')
+    listOfFilesAndStatus.pop()
+    addList = []
+    addedList = []
+    modified = []
+    removed = []
+    for item in listOfFilesAndStatus:
+        if( item[0] == "?" and item[1] == "?" ):
+             item = item.replace("??","")
+             item = item.strip()
+             addList.append(item)
+        elif( item[0] == "A"):
+             item = item.replace("A ","")
+             item = item.strip()
+             addedList.append(item)
+        elif( item[0] == "A" and item[1] == "D"):
+             item = item.replace("AD","")
+             item = item.strip()
+             removed.append(item)
+        elif( item[1] == "M"):
+             item = item[2:]
+             item = item.strip()
+             modified.append(item)
+             addList.append(item)
+        elif( item[0] == "M"):
+             item = item[2:]
+             item = item.strip()
+             modified.append(item)
+             addedList.append(item)
+        else:
+             print("unknown status! fix script")
+             sys.exit(0)
+
+    #git modified
+    if( len(modified) == 0 ):
+        print("\n***** no files modifed: *****")
+    else:
+        print("\n***** files modifed: *****")
+        for item in modified:
+             filename = item
+             print(item)
+
+    #git removed
+    if( len(removed) == 0 ):
+        print("\n***** no files removed: *****")
+    else:
+        print("\n***** files removed: *****")
+        for item in removed:
+             filename = item
+             print(item)
+       
+
+    #git add command - for each file to be added
+    confirmstr = ""
+    if( len(addList) == 0 ):
+        print("\n***** no files to add: *****")
+    else:
+        print("\n***** files to add: *****")
+        for item in addList:
+             filename = item
+             confirmstr = "add file " + filename + " to staging area[Y/N] - "
+             if( execgit.userConfirmation(confirmstr, "y", "n" ) == True ):
+                 git_add_cmd = ["git", "add", filename ]
+                 retCodee, retErr, retStr = execgit.execCommand(git_add_cmd)
+                 print("file " + filename + " added")
+                 addedList.append(filename)
+             else:
+                 print("file " + filename + " not added") 
+
+    if( len(addedList) > 0 ):
+        print("\n***** files already staged *****")
+        for item in addedList:
+            print(item)
+    else:
+        print("\n***** no files to stage *****")
+
+    #git commit command
+    if( len(addedList) > 0 ):
+        #git commit command
+        jira = execgit.getUserValue("\nEnter jira number for commit (or type skip):");
+        if( jira == "exit" or jira == "quit" ):
+             print("quit requested")
+             sys.exit(0)
+        if( jira != "skip" ):
+            git_commit_cmd = ["git", "commit", "-m"]
+            git_commit_cmd.append(jira)
+            #print (git_commit_cmd)
+            execgit.execCommand(git_commit_cmd)
+    else:
+        print("\n***** nothing to commit *****")
+
+
+    #List Commits not yet pushed
+    git_cherry_cmd = ["git", "cherry", "-v"]
+    print("\n***** local commits not yet pushed *****")
+    retCode, retErr, retStr = execgit.execCommand(git_cherry_cmd)
+    print(retStr)
+    
+
+main()

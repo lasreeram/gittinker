@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+from MyExecPkg import ExecGit
+import sys;
+
+def print_help():
+    print("help:")
+    print("\tgit_undo_commit\n")
+
+def main():
+    if( len(sys.argv) != 1 ):
+        print_help()
+        sys.exit(1)
+
+    #initialize objects
+    execgit = ExecGit()
+
+    #reset last command
+    confirmstr = "undo last local commit[Y/N]? - "
+    if( execgit.userConfirmation(confirmstr, "y", "n" ) == True ):
+        git_reset_last_cmd = ["git", "reset", "--soft", "HEAD^"]
+        execgit.execCommand(git_reset_last_cmd)
+
+    #List Commits not yet pushed
+    git_cherry_cmd = ["git", "cherry", "-v"]
+    print("\n***** local commits not yet pushed *****")
+    retCode, retErr, retStr = execgit.execCommand(git_cherry_cmd)
+    print(retStr)
+    
+
+main()
