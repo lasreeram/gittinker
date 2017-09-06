@@ -108,6 +108,7 @@ def main():
 
                 #git push - command
                 git_push_cmd = ["git", "push", "origin", branch]
+                print(git_push_cmd)
                 retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
 
             else:
