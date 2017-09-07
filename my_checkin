@@ -50,10 +50,16 @@ def main():
         if( len(splitPath) > 1 ):
             listOfPackages.append(splitPath[0])
 
+    git_cherry_cmd = ["git", "cherry", "-v"]
+    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+    commits = retStr.split('\n')
+    
 
-    if(len(listOfPackages) == 0 ):
+    if(len(listOfPackages) == 0 and len(commits) == 0 ):
         print("INFO: nothing to check in" )
         sys.exit(1)
+    elif (len(commits) > 0 ):
+        print("commits to be pushed" )
     else:
         setOfPackages = set(listOfPackages)
         for item in setOfPackages:
@@ -119,5 +125,6 @@ def main():
                 print("if this package is being checked in for the first time, run the below command")
                 print("cat 0-0-0 > " + filename )
                 sys.exit(-1)
+          
 
 main()
