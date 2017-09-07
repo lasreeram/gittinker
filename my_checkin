@@ -35,18 +35,21 @@ def main():
              item = item.strip()
              othersList.append(item)
 
+    print(othersList)
     if(len(othersList) > 0):
         print("Error: following files are untracked. Fix them before proceeding" )
         for item in othersList:
             print(item)
         sys.exit(1)
     
+    print(addModList)
     listOfPackages = []
     for item in addModList:
         splitPath = item.split(os.path.sep)
         #print(splitPath)
         if( len(splitPath) > 1 ):
             listOfPackages.append(splitPath[0])
+
 
     if(len(listOfPackages) == 0 ):
         print("INFO: nothing to check in" )
@@ -55,7 +58,7 @@ def main():
         setOfPackages = set(listOfPackages)
         for item in setOfPackages:
             filename = item + os.path.sep + "pkg.version"
-            #print(item)
+            print(item)
             if( retCode == 0 ):
                 #print(retStr)
                 fd = open(filename, "r")
