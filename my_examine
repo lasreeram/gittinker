@@ -104,6 +104,8 @@ def main():
              print("quit requested")
              sys.exit(0)
         if( jira != "skip" ):
+            #get list of packages changed
+            #change pkg.versions
             git_commit_cmd = ["git", "commit", "-m"]
             git_commit_cmd.append(jira)
             #print (git_commit_cmd)

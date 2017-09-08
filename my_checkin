@@ -3,21 +3,15 @@ from MyExecPkg import ExecGit
 import sys;
 import os;
 
+#initialize objects
+execgit = ExecGit()
+
 def print_help():
    print( "help:" )
    print( "\tmy_checkin <jira>\n" )
    print( "jira - jira number to use for the commit" )
 
-
-def main():
-
-    if(len(sys.argv) != 2 ):
-        print_help()
-        sys.exit(1)
-
-    #initialize objects
-    execgit = ExecGit()
-
+def getModifiedAndUnModifiedLists():
     #git status commamnd - to identify files to be added
     git_status_cmd = ["git", "status", "--porcelain"]
     retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
@@ -34,101 +28,126 @@ def main():
              item = item[2:]
              item = item.strip()
              othersList.append(item)
+    return (addModList,othersList)
 
-    print(othersList)
+def checkUnTrackedFiles(othersList):
+    #print(othersList)
     if(len(othersList) > 0):
         print("Error: following files are untracked. Fix them before proceeding" )
         for item in othersList:
             print(item)
         sys.exit(1)
-    
-    print(addModList)
+
+def getListOfPackages(addModList):
+    #print(addModList)
     listOfPackages = []
     for item in addModList:
         splitPath = item.split(os.path.sep)
         #print(splitPath)
         if( len(splitPath) > 1 ):
             listOfPackages.append(splitPath[0])
+    if( len(listOfPackages) > 0 ):
+        print( "\n***** list of packages to be checked in *****\n" )
+    for item in listOfPackages:
+        print item
+    return listOfPackages
 
+def getListOfCommits():
     git_cherry_cmd = ["git", "cherry", "-v"]
-    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+    retCode,retErr,retStr = execgit.execCommand(git_cherry_cmd)
     commits = retStr.split('\n')
-    
+    return commits
 
-    if(len(listOfPackages) == 0 and len(commits) == 0 ):
+def change_versions_for_packages(listOfPackages):
+    setOfPackages = set(listOfPackages)
+    retCode = 0
+    for item in setOfPackages:
+        filename = item + os.path.sep + "pkg.version"
+        #print(item)
+        if( retCode == 0 ):
+            #print(retStr)
+            fd = open(filename, "r")
+            version = fd.read()
+            fd.close()
+            version = version.strip('\n')
+            #print(version)
+            versionlist = version.split('-')
+            versionlistnum = map(lambda x: int(x), versionlist)
+            minorchange = map(lambda x: x, versionlistnum)
+            minorchange[2] = minorchange[2] + 1
+            majorchange = map(lambda x: x, versionlistnum)
+            majorchange[0] = majorchange[0] + 1
+            midchange = map(lambda x: x, versionlistnum)
+            midchange[1] = midchange[1] + 1
+            midchangestr = reduce(lambda x,y: str(x) + "-" + str(y), midchange)
+            minorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), minorchange)
+            majorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), majorchange)
+            print("option 0 " + minorchangestr)
+            print("option 1 " + midchangestr)
+            print("option 2 " + majorchangestr)
+            userValueInt = -1
+            while (userValueInt < 0 or userValueInt > 2):
+               userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
+               if( userValue == "skip" ):
+                   print("checkin aborted")
+                   sys.exit(1)
+               userValueInt = int(userValue)
+            if( userValueInt == 0 ):
+                versionStr = minorchangestr
+            elif( userValueInt == 1):
+                versionStr = midchangestr
+            elif(userValueInt == 2 ):
+                versionStr = majorchangestr
+            fd = open(filename, "w+")
+            fd.write(versionStr)
+            fd.close()
+            add_pkg_version_cmd = ["git", "add", filename]
+            retCode,retErr,retStr = execgit.execCommand(add_pkg_version_cmd)
+
+def commit_changes():
+    #git commit - command
+    jira = sys.argv[1]
+    git_commit_cmd = ["git", "commit", "-m", jira]
+    retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
+
+
+def push_changes():
+    #print("commits to be pushed" )
+    #get current branch
+    get_current_branch = ["git", "rev-parse", "--abbrev-ref", "HEAD"]
+    retCode,retErr,retStr = execgit.execCommand(get_current_branch)
+    branch = retStr.strip(' ')
+    branch = branch.strip('\0')
+    branch = branch.strip('\n')
+    if( branch == "master" or branch == "develop" ):
+          print("ERROR: unexpected branch name " + branch )
+          sys.exit(-1)
+    git_push_cmd = ["git", "push", "origin", branch ]
+    retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
+
+def main():
+    if(len(sys.argv) != 2 ):
+        print_help()
+        sys.exit(1)
+
+
+    #check untracked files and identify packages
+    addModList, othersList = getModifiedAndUnModifiedLists()
+    checkUnTrackedFiles(othersList)
+    listOfPackages = getListOfPackages(addModList)
+
+    #get list of commits
+    commits = getListOfCommits()
+
+    #All data is available - do work
+    if( len(commits) == 0 ):
         print("INFO: nothing to check in" )
         sys.exit(1)
-    elif (len(commits) > 0 ):
-        print("commits to be pushed" )
-        git_push_cmd = ["git", "push", "origin", "featureA"]
-        retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
+    elif ( len(commits) > 0 and len(listOfPackages) == 0):
+        push_changes()
     else:
-        setOfPackages = set(listOfPackages)
-        for item in setOfPackages:
-            filename = item + os.path.sep + "pkg.version"
-            print(item)
-            if( retCode == 0 ):
-                #print(retStr)
-                fd = open(filename, "r")
-                version = fd.read()
-                fd.close()
-                version = version.strip('\n')
-                #print(version)
-                versionlist = version.split('-')
-                versionlistnum = map(lambda x: int(x), versionlist)
-                minorchange = map(lambda x: x, versionlistnum)
-                minorchange[2] = minorchange[2] + 1
-                majorchange = map(lambda x: x, versionlistnum)
-                majorchange[0] = majorchange[0] + 1
-                midchange = map(lambda x: x, versionlistnum)
-                midchange[1] = midchange[1] + 1
-                midchangestr = reduce(lambda x,y: str(x) + "-" + str(y), midchange)
-                minorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), minorchange)
-                majorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), majorchange)
-                print("option 0 " + minorchangestr)
-                print("option 1 " + midchangestr)
-                print("option 2 " + majorchangestr)
-                userValueInt = -1
-                while (userValueInt < 0 or userValueInt > 2):
-                   userValue = execgit.getUserValue("Enter option (0,1,2):") 
-                   userValueInt = int(userValue)
-                if( userValueInt == 0 ):
-                    versionStr = minorchangestr
-                elif( userValueInt == 1):
-                    versionStr = midchangestr
-                elif(userValueInt == 2 ):
-                    versionStr = majorchangestr
-                fd = open(filename, "w+")
-                fd.write(versionStr)
-                fd.close()
-                add_pkg_version_cmd = ["git", "add", filename]
-                retCode,retErr,retStr = execgit.execCommand(add_pkg_version_cmd)
-
-                #get current branch
-                get_current_branch = ["git", "rev-parse", "--abbrev-ref", "HEAD"]
-                retCode,retErr,retStr = execgit.execCommand(get_current_branch)
-                branch = retStr.strip(' ')
-                if( branch == "master" or branch == "develop" ):
-                     print("ERROR: unexpected branch name " + branch )
-                     sys.exit(-1)
+	change_versions_for_packages(listOfPackages)
+        commit_changes() #needed because the version numbers have changed
+        push_changes()
                
-                #git commit - command
-                jira = sys.argv[1]
-                git_commit_cmd = ["git", "commit", "-m", jira]
-                retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
-
-                #git push - command
-                git_push_cmd = ["git", "push", "origin", "featureA"]
-                retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
-                #git_push_cmd = ["git", "push", "origin", branch]
-                #print(git_push_cmd)
-                #retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
-
-            else:
-                print("Error: " + filename + " not found")
-                print("if this package is being checked in for the first time, run the below command")
-                print("cat 0-0-0 > " + filename )
-                sys.exit(-1)
-          
-
 main()

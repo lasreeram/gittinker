@@ -8,6 +8,15 @@ def print_help():
    print( "\tmy_checkout <feature>\n" )
    print( "<feature> - name of the branch to check out" )
 
+def fetch_all_features():
+    #git fetch all commamnd - to identify files to be added
+    git_fetch_all_cmd = ["git", "fetch", "-all"]
+    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+
+def checkout_feature():
+    feature = sys.argv[1]
+    git_checkout_cmd = ["git", "checkout", feature]
+    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
 
 def main():
 
@@ -18,12 +27,8 @@ def main():
     #initialize objects
     execgit = ExecGit()
 
-    #git fetch all commamnd - to identify files to be added
-    git_fetch_all_cmd = ["git", "fetch", "-all"]
-    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
-    
-    feature = sys.argv[1]
-    git_checkout_cmd = ["git", "checkout", feature]
-    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+    #do work
+    fetch_all_feature()
+    checkout_feature()
 
 main()
