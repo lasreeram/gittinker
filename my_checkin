@@ -98,7 +98,7 @@ def change_versions_for_packages(listOfPackages):
     retCode = 0
     for item in setOfPackages:
         filename = item + os.path.sep + "pkg.version"
-        print("checking in package " + item)
+        print("INFO: checking in package " + item)
         if( retCode == 0 ):
             #print(retStr)
             fd = open(filename, "r")
@@ -124,7 +124,7 @@ def change_versions_for_packages(listOfPackages):
             while (userValueInt < 0 or userValueInt > 2):
                userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
                if( userValue == "skip" ):
-                   print("checkin aborted")
+                   print("check in aborted")
                    sys.exit(1)
                userValueInt = int(userValue)
             if( userValueInt == 0 ):
@@ -165,12 +165,11 @@ def main():
         print_help()
         sys.exit(1)
 
-
     #cannot check in if there are uncommitted files
     unCommittedList = getUnCommittedFiles()
     if( len(unCommittedList) > 0 ):
-        print("INFO: there are untracked files")
-        print("Following files are uncommitted. please commit" )
+        print("INFO: Cannot check in as there are uncommitted files")
+        print("INFO: Following files are uncommitted. please commit these files and try check in again" )
         for item in unCommittedList :
             print item
         sys.exit(-1)
