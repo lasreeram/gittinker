@@ -48,9 +48,10 @@ def getListOfPackages(addModList):
     return listOfPackages
 
 #git diff-tree --no-commit-id --name-only -r 8e9d4af83dae5e2c91834126eaffe2919192dcd8
-def getListOfPackagesFromCommits():
+def getSetOfPackagesFromCommits():
     commits = getListOfCommitNumbers()
     listOfPackages = []
+    commitMapByPackage = {}
     for commit in commits:
         git_diff_cmd = ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit ]
         retCode,retErr,retStr = execgit.execCommand(git_diff_cmd)
@@ -62,11 +63,14 @@ def getListOfPackagesFromCommits():
             splitPath = item.split(os.path.sep)
             #print(splitPath)
             if( len(splitPath) > 1 ):
-                 listOfPackages.append(splitPath[0])
+                 packageName = splitPath[0]
+                 listOfPackages.append(packageName)
+                 commitMapByPackage[packageName] = commit
 
     #print("list of packages:")
     #print(listOfPackages)
-    return listOfPackages
+    setOfPackages = set(listOfPackages)
+    return setOfPackages
 
         
 def getListOfCommitNumbers():
@@ -93,12 +97,12 @@ def getListOfCommits():
     commits = retStr.split('\n')
     return commits
 
-def change_versions_for_packages(listOfPackages):
-    setOfPackages = set(listOfPackages)
+def change_versions_for_packages(setOfPackages, commitMapByPackage):
     retCode = 0
     for item in setOfPackages:
-        filename = item + os.path.sep + "pkg.version"
-        print("INFO: checking in package " + item)
+        packageName = item
+        filename = packageName + os.path.sep + "pkg.version"
+        print("INFO: checking in package " + packageName)
         if( retCode == 0 ):
             #print(retStr)
             fd = open(filename, "r")
@@ -127,6 +131,7 @@ def change_versions_for_packages(listOfPackages):
                    print("check in aborted")
                    sys.exit(1)
                userValueInt = int(userValue)
+
             if( userValueInt == 0 ):
                 versionStr = minorchangestr
             elif( userValueInt == 1):
@@ -138,6 +143,12 @@ def change_versions_for_packages(listOfPackages):
             fd.close()
             add_pkg_version_cmd = ["git", "add", filename]
             retCode,retErr,retStr = execgit.execCommand(add_pkg_version_cmd)
+
+def amend_last_commit():
+    jira = sys.argv[1]
+    git_commit_cmd = ["git", "commit", "--amend" , jira]
+    retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
+
 
 def commit_changes():
     #git commit - command
@@ -183,12 +194,14 @@ def main():
 
 
     # there are commits to be pushed. Find out if version numbers need to be changed
-    listOfPackages = getListOfPackagesFromCommits()
-    if ( len(listOfPackages) == 0): #there are commits to be pushed
+    setOfPackages = getSetOfPackagesFromCommits()
+    if ( len(setOfPackages) == 0): #there are commits to be pushed
         push_changes()
     else:
-	change_versions_for_packages(listOfPackages)
+	change_versions_for_packages(setOfPackages)
         commit_changes() #needed because the version numbers have changed
         push_changes()
+
+    print("INFO: changes successfully checked in!" )
                
 main()
