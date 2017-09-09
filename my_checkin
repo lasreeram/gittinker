@@ -190,5 +190,7 @@ def main():
 	change_versions_for_packages(listOfPackages)
         commit_changes() #needed because the version numbers have changed
         push_changes()
+
+    print("INFO: changes successfully checked in!" )
                
 main()
