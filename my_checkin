@@ -52,6 +52,46 @@ def getListOfPackages(addModList):
         print item
     return listOfPackages
 
+#git diff-tree --no-commit-id --name-only -r 8e9d4af83dae5e2c91834126eaffe2919192dcd8
+def getListOfPackagesFromCommits():
+    commits = getListOfCommitNumbers()
+    listOfPackages = []
+    for commit in commits:
+        git_diff_cmd = ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit ]
+        retCode,retErr,retStr = execgit.execCommand(git_diff_cmd)
+        fileList = retStr.split("\n");
+        for item in fileList:
+            item = item.strip(' ')
+            item = item.strip('\0')
+            item = item.strip('\n')
+            splitPath = item.split(os.path.sep)
+            #print(splitPath)
+            if( len(splitPath) > 1 ):
+                 listOfPackages.append(splitPath[0])
+
+    #print("list of packages:")
+    #print(listOfPackages)
+    return listOfPackages
+
+        
+def getListOfCommitNumbers():
+    git_cherry_cmd = ["git", "cherry"]
+    retCode,retErr,retStr = execgit.execCommand(git_cherry_cmd)
+    commits = retStr.split('\n')
+    commitnumbers = []
+    for item in commits:
+         commitList = item.split(' ')
+         if(len(commitList) < 2 ):
+             continue
+         #print("commit list")
+         #print(commitList)
+         commitnum = commitList[1]
+         commitnum = commitnum.strip(' ')
+         commitnum = commitnum.strip('\0')
+         commitnum = commitnum.strip('\n')
+         commitnumbers.append(commitnum)
+    return commitnumbers
+
 def getListOfCommits():
     git_cherry_cmd = ["git", "cherry", "-v"]
     retCode,retErr,retStr = execgit.execCommand(git_cherry_cmd)
@@ -63,7 +103,7 @@ def change_versions_for_packages(listOfPackages):
     retCode = 0
     for item in setOfPackages:
         filename = item + os.path.sep + "pkg.version"
-        #print(item)
+        print("checking in package " + item)
         if( retCode == 0 ):
             #print(retStr)
             fd = open(filename, "r")
@@ -134,16 +174,18 @@ def main():
     #check untracked files and identify packages
     addModList, othersList = getModifiedAndUnModifiedLists()
     checkUnTrackedFiles(othersList)
-    listOfPackages = getListOfPackages(addModList)
 
     #get list of commits
     commits = getListOfCommits()
-
     #All data is available - do work
     if( len(commits) == 0 ):
         print("INFO: nothing to check in" )
         sys.exit(1)
-    elif ( len(commits) > 0 and len(listOfPackages) == 0):
+
+
+    # there are commits to be pushed. Find out if version numbers need to be changed
+    listOfPackages = getListOfPackagesFromCommits()
+    if ( len(listOfPackages) == 0): #there are commits to be pushed
         push_changes()
     else:
 	change_versions_for_packages(listOfPackages)
