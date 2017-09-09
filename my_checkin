@@ -11,24 +11,19 @@ def print_help():
    print( "\tmy_checkin <jira>\n" )
    print( "jira - jira number to use for the commit" )
 
-def getModifiedAndUnModifiedLists():
-    #git status commamnd - to identify files to be added
+def getUnCommittedFiles():
     git_status_cmd = ["git", "status", "--porcelain"]
     retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
     listOfFilesAndStatus = retStr.split('\n')
     listOfFilesAndStatus.pop()
-    othersList = []
     addModList = []
     for item in listOfFilesAndStatus:
-        if( item[0] == "A" or (item[0] == "M" and item[1] !="M") or item[0] == "D" or item[0] == "R" or item[0] == "C" ):
-             item = item[2:]
-             item = item.strip()
-             addModList.append(item)
-        else:
-             item = item[2:]
-             item = item.strip()
-             othersList.append(item)
-    return (addModList,othersList)
+        item = item[2:]
+        item = item.strip()
+        item = item.strip('\0')
+        item = item.strip('\n')
+        addModList.append(item)
+    return addModList
 
 def checkUnTrackedFiles(othersList):
     #print(othersList)
@@ -171,9 +166,14 @@ def main():
         sys.exit(1)
 
 
-    #check untracked files and identify packages
-    addModList, othersList = getModifiedAndUnModifiedLists()
-    checkUnTrackedFiles(othersList)
+    #cannot check in if there are uncommitted files
+    unCommittedList = getUnCommittedFiles()
+    if( len(unCommittedList) > 0 ):
+        print("INFO: there are untracked files")
+        print("Following files are uncommitted. please commit" )
+        for( item in unCommittedList ):
+            print item
+        sys.exit(-1)
 
     #get list of commits
     commits = getListOfCommits()
