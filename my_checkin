@@ -50,7 +50,6 @@ def getListOfPackages(addModList):
 #git diff-tree --no-commit-id --name-only -r 8e9d4af83dae5e2c91834126eaffe2919192dcd8
 def getSetOfPackagesFromCommits(commits):
     listOfPackages = []
-    commitMapByPackage = {}
     for commit in commits:
         git_diff_cmd = ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit ]
         retCode,retErr,retStr = execgit.execCommand(git_diff_cmd)
@@ -64,7 +63,6 @@ def getSetOfPackagesFromCommits(commits):
             if( len(splitPath) > 1 ):
                  packageName = splitPath[0]
                  listOfPackages.append(packageName)
-                 commitMapByPackage[packageName] = commit
 
     #print("list of packages:")
     #print(listOfPackages)
@@ -96,7 +94,7 @@ def getListOfCommits():
     commits = retStr.split('\n')
     return commits
 
-def change_versions_for_packages(setOfPackages, commitMapByPackage):
+def change_versions_for_packages(setOfPackages):
     retCode = 0
     for item in setOfPackages:
         packageName = item
