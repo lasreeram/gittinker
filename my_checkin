@@ -9,7 +9,7 @@ execgit = ExecGit()
 def print_help():
    print( "help:" )
    print( "\tmy_checkin <jira>\n" )
-   print( "jira - jira number to use for the commit" )
+   print( "INFO: jira - jira number to use for the commit" )
 
 def getUnCommittedFiles():
     git_status_cmd = ["git", "status", "--porcelain"]
@@ -28,7 +28,7 @@ def getUnCommittedFiles():
 def checkUnTrackedFiles(othersList):
     #print(othersList)
     if(len(othersList) > 0):
-        print("Error: following files are untracked. Fix them before proceeding" )
+        print("ERROR: following files are untracked. Fix them before proceeding" )
         for item in othersList:
             print(item)
         sys.exit(1)
@@ -42,7 +42,7 @@ def getListOfPackages(addModList):
         if( len(splitPath) > 1 ):
             listOfPackages.append(splitPath[0])
     if( len(listOfPackages) > 0 ):
-        print( "\n***** list of packages to be checked in *****\n" )
+        print( "\nINFO: ***** list of packages to be checked in *****\n" )
     for item in listOfPackages:
         print item
     return listOfPackages
@@ -125,7 +125,7 @@ def change_versions_for_packages(setOfPackages):
             while (userValueInt < 0 or userValueInt > 2):
                userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
                if( userValue == "skip" ):
-                   print("check in aborted")
+                   print("INFO: check in aborted")
                    sys.exit(1)
                userValueInt = int(userValue)
 
@@ -172,7 +172,7 @@ def main():
         print("INFO: Cannot check in as there are uncommitted files")
         print("INFO: Following files are uncommitted. please commit these files and try check in again" )
         for item in unCommittedList :
-            print item
+            print (item)
         sys.exit(-1)
 
     #get list of commits

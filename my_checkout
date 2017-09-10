@@ -6,7 +6,7 @@ import os;
 def print_help():
    print( "help:" )
    print( "\tmy_checkout <feature>\n" )
-   print( "<feature> - name of the branch to check out" )
+   print( "INFO: <feature> - name of the branch to check out" )
 
 def fetch_all_features():
     #git fetch all commamnd - to identify files to be added
