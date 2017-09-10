@@ -48,8 +48,7 @@ def getListOfPackages(addModList):
     return listOfPackages
 
 #git diff-tree --no-commit-id --name-only -r 8e9d4af83dae5e2c91834126eaffe2919192dcd8
-def getSetOfPackagesFromCommits():
-    commits = getListOfCommitNumbers()
+def getSetOfPackagesFromCommits(commits):
     listOfPackages = []
     commitMapByPackage = {}
     for commit in commits:
@@ -146,14 +145,7 @@ def change_versions_for_packages(setOfPackages, commitMapByPackage):
 
 def amend_last_commit():
     jira = sys.argv[1]
-    git_commit_cmd = ["git", "commit", "--amend" , jira]
-    retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
-
-
-def commit_changes():
-    #git commit - command
-    jira = sys.argv[1]
-    git_commit_cmd = ["git", "commit", "-m", jira]
+    git_commit_cmd = ["git", "commit", "--amend" , "-m", jira]
     retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
 
 
@@ -186,7 +178,7 @@ def main():
         sys.exit(-1)
 
     #get list of commits
-    commits = getListOfCommits()
+    commits = getListOfCommitNumbers()
     #All data is available - do work
     if( len(commits) == 0 ):
         print("INFO: nothing to check in" )
@@ -194,12 +186,12 @@ def main():
 
 
     # there are commits to be pushed. Find out if version numbers need to be changed
-    setOfPackages = getSetOfPackagesFromCommits()
+    setOfPackages = getSetOfPackagesFromCommits(commits)
     if ( len(setOfPackages) == 0): #there are commits to be pushed
         push_changes()
     else:
 	change_versions_for_packages(setOfPackages)
-        commit_changes() #needed because the version numbers have changed
+        amend_last_commit() #needed because the version numbers have changed
         push_changes()
 
     print("INFO: changes successfully checked in!" )
