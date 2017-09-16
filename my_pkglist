@@ -12,7 +12,7 @@ def print_help():
    print( "INFO: commit number - find packages in this commit number" )
 
 #git diff-tree --no-commit-id --name-only -r 8e9d4af83dae5e2c91834126eaffe2919192dcd8
-def getSetOfPackagesFromCommits(commits):
+def printPackageAndVersionFromCommits(commits):
     listOfPackages = []
     for commit in commits:
         git_diff_cmd = ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", commit ]
@@ -31,6 +31,17 @@ def getSetOfPackagesFromCommits(commits):
     #print("list of packages:")
     #print(listOfPackages)
     setOfPackages = set(listOfPackages)
+    if ( len(setOfPackages) == 0): #there are commits to be pushed
+        print("INFO: no packages found in this commit" )
+        return setOfPackages
+
+    for item in setOfPackages:
+        packageName = item
+        filename = packageName + os.path.sep + "pkg.version"
+        fd = open(filename, "r")
+        version = fd.read()
+        print( packageName + " --> " + version )
+         
     return setOfPackages
 
         
@@ -42,12 +53,7 @@ def main():
     #cannot check in if there are uncommitted files
     commits = [sys.argv[1]]
     # there are commits to be pushed. Find out if version numbers need to be changed
-    setOfPackages = getSetOfPackagesFromCommits(commits)
-    if ( len(setOfPackages) == 0): #there are commits to be pushed
-        print("INFO: no packages found in this commit" )
-    else:
-        for package in setOfPackages:
-            print(package)
-
+    printPackageAndVersionFromCommits(commits)
                
+
 main()
