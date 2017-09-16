@@ -1,0 +1,83 @@
+#!/usr/bin/env python
+from MyExecPkg import ExecGit
+import sys;
+import os;
+
+#initialize objects
+execgit = ExecGit()
+
+def print_help():
+   print( "help:" )
+   print( "\tmy_pkgdiff <commit-number-1> <commit-number-2>\n" )
+   print( "INFO: <commit-number-1> - first commit number" )
+   print( "INFO: <commit-number-2> - second commit number" )
+
+def extractVersionNumbersFromDiff( diffStr ):
+    lines = diffStr.split("\n")
+    for line in lines:
+        if( line == '' ):
+             continue
+        if( line.startswith("diff") ):
+             continue
+        if( line.startswith("---") ):
+             continue
+        if( line.startswith("+++") ):
+             continue
+        if( line.startswith("index") ):
+             continue
+        if( line.startswith("@") ):
+             continue
+        if( line.startswith("/") ):
+             continue
+        if( line.startswith("-") and line[1].isdigit() ):
+             prevVersion = line.strip("-")
+        if( line.startswith("+") and line[1].isdigit() ):
+             currentVersion = line.strip("+")
+
+    return (prevVersion, currentVersion)
+
+#git diff --name-only
+def getPackageDifferencesBetweenCommits(commit1, commit2):
+    listOfPackages = []
+    git_diff_cmd = ["git", "diff", "--name-only", commit1, commit2]
+    retCode,retErr,retStr = execgit.execCommand(git_diff_cmd)
+    fileList = retStr.split("\n");
+    #print( "filelist = " )
+    #print( fileList )
+    i = 0
+    for item in fileList:
+        item = item.strip(' ')
+        item = item.strip('\0')
+        item = item.strip('\n')
+        splitPath = item.split(os.path.sep)
+        #print(splitPath)
+        if( len(splitPath) > 1 ):
+             fullFileName = item
+             packageName = splitPath[0]
+             filename = splitPath[1]
+             #print( filename)
+             #print( fullFileName )
+             if( i == 0 ):
+                 print ( "INFO: the following packages changed between the two commits" )
+                 i = i + 1
+             if( filename == "pkg.version" ):
+                 git_diff_file_cmd = ["git", "diff", commit1, commit2, fullFileName ]
+                 retCode,retErr,retStr = execgit.execCommand(git_diff_file_cmd)
+                 prevVersion, currentVersion = extractVersionNumbersFromDiff(retStr)
+                 print( packageName + "-" + prevVersion + " ---> " + packageName + "-" + currentVersion )
+             listOfPackages.append(packageName)
+
+    setOfPackages = set(listOfPackages)
+    return setOfPackages
+    
+
+def main():
+    if(len(sys.argv) != 3 ):
+        print_help()
+        sys.exit(1)
+
+    commit1 = sys.argv[1]
+    commit2 = sys.argv[2]
+    getPackageDifferencesBetweenCommits( commit1, commit2 )
+
+main()

@@ -1,0 +1,47 @@
+From 4f18d2e9fb7b4629cd6a0585352594a0cb92281a Mon Sep 17 00:00:00 2001
+From: aardra <lasreeram@gmail.com>
+Date: Sat, 16 Sep 2017 11:58:09 -0400
+Subject: [PATCH 1/1] jira9
+
+---
+ my_checkin       | 6 +++---
+ pkg1/file5.txt   | 2 +-
+ pkg1/pkg.version | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/my_checkin b/my_checkin
+index b08f652..c361137 100755
+--- a/my_checkin
++++ b/my_checkin
+@@ -118,9 +118,9 @@ def change_versions_for_packages(setOfPackages):
+             midchangestr = reduce(lambda x,y: str(x) + "-" + str(y), midchange)
+             minorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), minorchange)
+             majorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), majorchange)
+-            print("option 0 " + minorchangestr)
+-            print("option 1 " + midchangestr)
+-            print("option 2 " + majorchangestr)
++            print("option 0 : " + minorchangestr)
++            print("option 1 : " + midchangestr)
++            print("option 2 : " + majorchangestr)
+             userValueInt = -1
+             while (userValueInt < 0 or userValueInt > 2):
+                userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
+diff --git a/pkg1/file5.txt b/pkg1/file5.txt
+index eef7627..f4f1901 100644
+--- a/pkg1/file5.txt
++++ b/pkg1/file5.txt
+@@ -1 +1 @@
+-file5 - abc def ghi rde
++file5 - abc def ghi rde dwe
+diff --git a/pkg1/pkg.version b/pkg1/pkg.version
+index df71951..b0c29ae 100644
+--- a/pkg1/pkg.version
++++ b/pkg1/pkg.version
+@@ -1 +1 @@
+-1-22-142
+\ No newline at end of file
++2-22-142
+\ No newline at end of file
+-- 
+2.7.4
+

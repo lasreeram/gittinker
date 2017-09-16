@@ -14,3 +14,12 @@ checkout <feature> - encodes git fetch --all; git checkout <feature>
 make changes
 examine - identifies the list of packages modified and asks for confirmation for each package. Package names must begin with a certain pattern?
 checkin <feature> <comments> - updates package version file for every package changed, does a commit without -a option, does a push to the server.
+
+#package list
+aardra@aardra-Lenovo-B590:~/repo/gittinker$ git diff --name-only 4f18d2e9fb7b4629cd6a0585352594a0cb92281a b2bc7bf66efeddb8282b4049924e0ad4ca78509c
+my_checkin
+pkg1/file5.txt
+pkg1/pkg.version
+
+aardra@aardra-Lenovo-B590:~/repo/gittinker$ ./my_pkglist b2bc7bf66efeddb8282b4049924e0ad4ca78509c
+pkg1 --> 2-22-142
