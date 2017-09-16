@@ -118,9 +118,9 @@ def change_versions_for_packages(setOfPackages):
             midchangestr = reduce(lambda x,y: str(x) + "-" + str(y), midchange)
             minorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), minorchange)
             majorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), majorchange)
-            print("option 0 " + minorchangestr)
-            print("option 1 " + midchangestr)
-            print("option 2 " + majorchangestr)
+            print("option 0 : " + minorchangestr)
+            print("option 1 : " + midchangestr)
+            print("option 2 : " + majorchangestr)
             userValueInt = -1
             while (userValueInt < 0 or userValueInt > 2):
                userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
