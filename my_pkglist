@@ -35,11 +35,15 @@ def printPackageAndVersionFromCommits(commits):
         print("INFO: no packages found in this commit" )
         return setOfPackages
 
+    i = 0
     for item in setOfPackages:
         packageName = item
         filename = packageName + os.path.sep + "pkg.version"
         fd = open(filename, "r")
         version = fd.read()
+        if( i == 0 ):
+            print( "INFO: The following packages were changed in this commit" )
+            i = i + 1
         print( packageName + "-" + version )
          
     return setOfPackages
