@@ -40,7 +40,7 @@ def printPackageAndVersionFromCommits(commits):
         filename = packageName + os.path.sep + "pkg.version"
         fd = open(filename, "r")
         version = fd.read()
-        print( packageName + " --> " + version )
+        print( packageName + "-" + version )
          
     return setOfPackages
 

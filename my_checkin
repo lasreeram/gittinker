@@ -161,6 +161,10 @@ def push_changes():
     git_push_cmd = ["git", "push", "origin", branch ]
     retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
 
+def add_notes_to_last_commit():
+    git_add_notes_cmd = ["git", "notes", "add", '"checked-in-by-script"']
+    retCode,retErr,retStr = execgit.execCommand(get_current_branch)
+
 def main():
     if(len(sys.argv) != 2 ):
         print_help()
@@ -186,10 +190,12 @@ def main():
     # there are commits to be pushed. Find out if version numbers need to be changed
     setOfPackages = getSetOfPackagesFromCommits(commits)
     if ( len(setOfPackages) == 0): #there are commits to be pushed
+        add_notes_to_last_commit()
         push_changes()
     else:
 	change_versions_for_packages(setOfPackages)
         amend_last_commit() #needed because the version numbers have changed
+        add_notes_to_last_commit()
         push_changes()
 
     print("INFO: changes successfully checked in!" )
