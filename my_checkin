@@ -107,7 +107,7 @@ def change_versions_for_packages(setOfPackages):
             fd.close()
             version = version.strip('\n')
             #print(version)
-            versionlist = version.split('-')
+            versionlist = version.split('.')
             versionlistnum = map(lambda x: int(x), versionlist)
             minorchange = map(lambda x: x, versionlistnum)
             minorchange[2] = minorchange[2] + 1
@@ -115,9 +115,9 @@ def change_versions_for_packages(setOfPackages):
             majorchange[0] = majorchange[0] + 1
             midchange = map(lambda x: x, versionlistnum)
             midchange[1] = midchange[1] + 1
-            midchangestr = reduce(lambda x,y: str(x) + "-" + str(y), midchange)
-            minorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), minorchange)
-            majorchangestr = reduce(lambda x,y: str(x) + "-" + str(y), majorchange)
+            midchangestr = reduce(lambda x,y: str(x) + "." + str(y), midchange)
+            minorchangestr = reduce(lambda x,y: str(x) + "." + str(y), minorchange)
+            majorchangestr = reduce(lambda x,y: str(x) + "." + str(y), majorchange)
             print("option 0 : " + minorchangestr)
             print("option 1 : " + midchangestr)
             print("option 2 : " + majorchangestr)
