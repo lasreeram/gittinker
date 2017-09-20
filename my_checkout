@@ -3,6 +3,9 @@ from MyExecPkg import ExecGit
 import sys;
 import os;
 
+#initialize objects
+execgit = ExecGit()
+
 def print_help():
    print( "help:" )
    print( "\tmy_checkout <feature>\n" )
@@ -10,13 +13,13 @@ def print_help():
 
 def fetch_all_features():
     #git fetch all commamnd - to identify files to be added
-    git_fetch_all_cmd = ["git", "fetch", "-all"]
-    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+    git_fetch_all_cmd = ["git", "fetch", "--all"]
+    retCode,retErr,retStr = execgit.execCommand(git_fetch_all_cmd)
 
 def checkout_feature():
     feature = sys.argv[1]
     git_checkout_cmd = ["git", "checkout", feature]
-    retCode,retErr,retStr = execgit.execCommand(git_status_cmd)
+    retCode,retErr,retStr = execgit.execCommand(git_checkout_cmd)
 
 def main():
 
@@ -24,11 +27,8 @@ def main():
         print_help()
         sys.exit(1)
 
-    #initialize objects
-    execgit = ExecGit()
-
     #do work
-    fetch_all_feature()
+    fetch_all_features()
     checkout_feature()
 
 main()
