@@ -31,9 +31,9 @@ def printPackageAndVersionFromCommits(commits):
     #print("list of packages:")
     #print(listOfPackages)
     setOfPackages = set(listOfPackages)
-    if ( len(setOfPackages) == 0): #there are commits to be pushed
-        print("INFO: no packages found in this commit" )
-        return setOfPackages
+    #if ( len(setOfPackages) == 0): #there are commits to be pushed
+    #    print("INFO: no packages found in this commit" )
+    #    return setOfPackages
 
     i = 0
     for item in setOfPackages:
@@ -57,7 +57,9 @@ def main():
     #cannot check in if there are uncommitted files
     commits = [sys.argv[1]]
     # there are commits to be pushed. Find out if version numbers need to be changed
-    printPackageAndVersionFromCommits(commits)
+    setOfPackages = printPackageAndVersionFromCommits(commits)
+    if( len(setOfPackages) == 0 ):
+        print( "INFO: No packages in this commit" )
                
 
 main()
