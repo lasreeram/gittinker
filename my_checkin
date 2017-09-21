@@ -194,6 +194,7 @@ def main():
     lastCommit = commits[len(commits)-1]
     if ( len(setOfPackages) == 0): #there are commits to be pushed
         #add_notes_to_commit(lastCommit)
+        commits = getListOfCommitNumbers()
         for commit in commits:
 	    add_notes_to_commit(commit)
         push_changes()
@@ -201,6 +202,7 @@ def main():
 	change_versions_for_packages(setOfPackages)
         #add_notes_to_commit(lastCommit)
         amend_last_commit() #needed because the version numbers have changed
+        commits = getListOfCommitNumbers()
         for commit in commits:
 	    add_notes_to_commit(commit)
         push_changes()
