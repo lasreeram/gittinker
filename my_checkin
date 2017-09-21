@@ -164,6 +164,7 @@ def push_changes():
 def add_notes_to_commit(commit):
     print(commit)
     git_add_notes_cmd = ["git", "notes", "add", "-f", "-m", '"checked-in-by-script"', commit ]
+    print(git_add_notes_cmd)
     retCode,retErr,retStr = execgit.execCommand(git_add_notes_cmd)
 
 def main():
@@ -192,11 +193,11 @@ def main():
     setOfPackages = getSetOfPackagesFromCommits(commits)
     lastCommit = commits[len(commits)-1]
     if ( len(setOfPackages) == 0): #there are commits to be pushed
-        add_notes_to_commit(lastCommit)
+        #add_notes_to_commit(lastCommit)
         push_changes()
     else:
 	change_versions_for_packages(setOfPackages)
-        add_notes_to_commit(lastCommit)
+        #add_notes_to_commit(lastCommit)
         amend_last_commit() #needed because the version numbers have changed
         push_changes()
 
