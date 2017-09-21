@@ -162,7 +162,7 @@ def push_changes():
     retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
 
 def add_notes_to_commit(commit):
-    git_add_notes_cmd = ["git", "notes", "add", "-m", '"checked-in-by-script"', commit]
+    git_add_notes_cmd = ["git", "notes", "add", "-m", '"checked-in-by-script"', "HEAD" ]
     retCode,retErr,retStr = execgit.execCommand(git_add_notes_cmd)
     print retCode
     print retErr
