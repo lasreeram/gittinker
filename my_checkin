@@ -145,6 +145,7 @@ def amend_last_commit():
     jira = sys.argv[1]
     git_commit_cmd = ["git", "commit", "--amend" , "-m", jira]
     retCode,retErr,retStr = execgit.execCommand(git_commit_cmd)
+    add_notes_to_commit("HEAD")
 
 
 def push_changes():
