@@ -164,6 +164,7 @@ def push_changes():
 def add_notes_to_commit(commit):
     git_add_notes_cmd = ["git", "notes", "add", "-f", "-m", '"checked-in-by-script"', commit]
     retCode,retErr,retStr = execgit.execCommand(git_add_notes_cmd)
+    print retStr
 
 def main():
     if(len(sys.argv) != 2 ):
