@@ -195,8 +195,8 @@ def main():
         push_changes()
     else:
 	change_versions_for_packages(setOfPackages)
-        amend_last_commit() #needed because the version numbers have changed
         add_notes_to_commit(lastCommit)
+        amend_last_commit() #needed because the version numbers have changed
         push_changes()
 
     print("INFO: changes successfully checked in!" )
