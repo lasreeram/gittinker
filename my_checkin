@@ -156,7 +156,8 @@ def push_changes():
     branch = branch.strip('\0')
     branch = branch.strip('\n')
     if( branch == "master" or branch == "develop" ):
-          print("ERROR: unexpected branch name " + branch )
+          print("ERROR: cannot push " + branch  )
+          print("ERROR: work must be done on a feature branch and merged to " + branch  )
           sys.exit(-1)
     git_push_cmd = ["git", "push", "origin", branch ]
     retCode,retErr,retStr = execgit.execCommand(git_push_cmd)
