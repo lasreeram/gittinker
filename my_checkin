@@ -147,8 +147,8 @@ def change_versions_for_packages(setOfPackages):
             #print(version)
             versionlist = version.split('.')
             #print( versionlist )
-            if( len(versionlist) == 0 ):
-                print("FATAL: pkg.version is empty. Please check!")
+            if( len(versionlist) != 3 ):
+                print("FATAL: pkg.version is empty or invalid. Please check!")
                 sys.exit(-1)
             versionlistnum = map(lambda x: int(x), versionlist)
             minorchange = map(lambda x: x, versionlistnum)
