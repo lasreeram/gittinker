@@ -94,6 +94,33 @@ def getListOfCommits():
     commits = retStr.split('\n')
     return commits
 
+def createNewVersionFile(packageName, filename):
+        print( "INFO: version file not found!. Creating.." )
+        print( "INFO: Please select one of the options for the initial version" )
+        print("option 0 : " + "0.0.0")
+        print("option 1 : " + "0.1.0")
+        print("option 2 : " + "1.0.0" )
+        userValueInt = -1
+        while (userValueInt < 0 or userValueInt > 2):
+            userValue = execgit.getUserValue("Enter option (0,1,2 or enter skip):") 
+            if( userValue == "skip" ):
+                print("INFO: check in aborted")
+                sys.exit(1)
+            userValueInt = int(userValue)
+        try:
+            fd = open(filename, "w")
+            if( userIntValue == 0 ):
+                fd.write( "0.0.0" )
+            elif( userIntValue == 1 ):
+                fd.write( "0.1.0" )
+            else:
+                fd.write( "1.0.0" )
+            fd.close()
+        except:
+            print( "FATAL: error creating initial version file" )
+            sys.exit(-1)
+
+     
 def change_versions_for_packages(setOfPackages):
     retCode = 0
     for item in setOfPackages:
@@ -102,9 +129,16 @@ def change_versions_for_packages(setOfPackages):
         print("INFO: checking in package " + packageName)
         if( retCode == 0 ):
             #print(retStr)
-            fd = open(filename, "r")
-            version = fd.read()
-            fd.close()
+            try:
+                fd = open(filename, "r")
+                version = fd.read()
+                fd.close()
+            except FileNotFoundError:
+                createNewVersionFile(packageName, filename)
+                continue
+            else:
+                print( "FATAL: unexpected error when trying to open " + filename )
+                sys.exit(-1)
             version = version.strip('\n')
             #print(version)
             versionlist = version.split('.')
