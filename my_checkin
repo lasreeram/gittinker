@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from MyExecPkg import ExecGit
-import sys;
-import os;
-import errno;
+import sys
+import os
+import errno
+from pathlib import Path
 
 #initialize objects
 execgit = ExecGit()
@@ -130,14 +131,16 @@ def change_versions_for_packages(setOfPackages):
         print("INFO: checking in package " + packageName)
         if( retCode == 0 ):
             #print(retStr)
+            pathobj = Path(filename)
+            if( !pathobj.exists() ):
+                createNewVersionFile(packageName, filename)
+                continue
+
             try:
                 fd = open(filename, "r")
                 version = fd.read()
                 fd.close()
-            except FileNotFoundError:
-                createNewVersionFile(packageName, filename)
-                continue
-            else:
+            except (OSError, IOError):
                 print( "FATAL: unexpected error when trying to open " + filename )
                 sys.exit(-1)
             version = version.strip('\n')
