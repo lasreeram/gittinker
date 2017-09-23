@@ -13,6 +13,7 @@ def print_help():
    print( "INFO: <commit-number-2> - second commit number" )
 
 def extractVersionNumbersFromDiff( diffStr ):
+    #print( diffStr )
     lines = diffStr.split("\n")
     for line in lines:
         if( line == '' ):
@@ -29,9 +30,13 @@ def extractVersionNumbersFromDiff( diffStr ):
              continue
         if( line.startswith("/") ):
              continue
-        if( line.startswith("-") and line[1].isdigit() ):
+        if( line.startswith("-") and len(line) < 6 ):
+             prevVersion = "new file"
+        elif( line.startswith("-") and line[1].isdigit() ):
              prevVersion = line.strip("-")
-        if( line.startswith("+") and line[1].isdigit() ):
+        if( line.startswith("+") and len(line) < 6 ):
+             currentVersion = "new file"
+        elif( line.startswith("+") and line[1].isdigit() ):
              currentVersion = line.strip("+")
 
     return (prevVersion, currentVersion)
