@@ -118,8 +118,8 @@ def createNewVersionFile(packageName, filename):
                 fd.write( "1.0.0" )
             fd.close()
         except:
-            typ, value, traceback = sys.exc_info()
-            print( "FATAL: error creating initial version file " + value.strerror )
+            #typ, value, traceback = sys.exc_info()
+            print( "FATAL: error creating initial version file " )
             #print( traceback )
             sys.exit(-1)
 
