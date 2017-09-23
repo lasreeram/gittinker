@@ -117,6 +117,8 @@ def createNewVersionFile(packageName, filename):
             else:
                 fd.write( "1.0.0" )
             fd.close()
+            add_pkg_version_cmd = ["git", "add", filename]
+            retCode,retErr,retStr = execgit.execCommand(add_pkg_version_cmd)
         except(IOError, OSError):
             typ, value, traceback = sys.exc_info()
             print( "FATAL: error creating initial version file " )
