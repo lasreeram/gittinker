@@ -109,7 +109,7 @@ def createNewVersionFile(packageName, filename):
                 sys.exit(1)
             userValueInt = int(userValue)
         try:
-            fd = open(filename, "w")
+            fd = open(filename, "w+")
             if( userIntValue == 0 ):
                 fd.write( "0.0.0" )
             elif( userIntValue == 1 ):
@@ -118,7 +118,9 @@ def createNewVersionFile(packageName, filename):
                 fd.write( "1.0.0" )
             fd.close()
         except:
-            print( "FATAL: error creating initial version file" )
+            typ, value, traceback = sys.exc_info()
+            print( "FATAL: error creating initial version file " + value.strerror )
+            print( traceback )
             sys.exit(-1)
 
      
