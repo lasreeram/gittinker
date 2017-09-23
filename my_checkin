@@ -3,7 +3,6 @@ from MyExecPkg import ExecGit
 import sys
 import os
 import errno
-from pathlib import Path
 
 #initialize objects
 execgit = ExecGit()
@@ -131,8 +130,7 @@ def change_versions_for_packages(setOfPackages):
         print("INFO: checking in package " + packageName)
         if( retCode == 0 ):
             #print(retStr)
-            pathobj = Path(filename)
-            if( not pathobj.exists() ):
+            if( not os.path.exists(filename) ):
                 createNewVersionFile(packageName, filename)
                 continue
 
