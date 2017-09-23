@@ -146,6 +146,7 @@ def change_versions_for_packages(setOfPackages):
             version = version.strip('\n')
             #print(version)
             versionlist = version.split('.')
+            print( versionlist )
             versionlistnum = map(lambda x: int(x), versionlist)
             minorchange = map(lambda x: x, versionlistnum)
             minorchange[2] = minorchange[2] + 1
