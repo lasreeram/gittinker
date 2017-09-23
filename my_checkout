@@ -21,6 +21,19 @@ def checkout_feature():
     git_checkout_cmd = ["git", "checkout", feature]
     retCode,retErr,retStr = execgit.execCommand(git_checkout_cmd)
 
+def build_links_to_from_sdir_to_packages():
+    path = '.'
+    files = os.listdir(path)
+    packages = filter( lambda x: (x != '.git' and x != 'MyExecPkg' and os.path.isdir(x)), files )
+    for package in packages:
+        fullPathOfPackage = os.path.abspath(package)
+        if( not os.path.exists( os.path.expandvars( "$MY_SOURCE_DIR" + os.path.sep + package ) ) ):
+            os_create_link_cmd = [ "ln", "-s", fullPathOfPackage,  os.path.expandvars( "$MY_SOURCE_DIR" + os.path.sep + package ) ]
+            retCode,retErr,retStr = execgit.execCommand(os_create_link_cmd)
+            #print( fullPathOfPackage )
+            print( "INFO: created link " + os.path.expandvars( "$MY_SOURCE_DIR" + os.path.sep + package )  )
+    #print( packages )
+
 def main():
 
     if(len(sys.argv) != 2 ):
@@ -30,5 +43,6 @@ def main():
     #do work
     fetch_all_features()
     checkout_feature()
+    build_links_to_from_sdir_to_packages()
 
 main()
