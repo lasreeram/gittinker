@@ -120,7 +120,7 @@ def createNewVersionFile(packageName, filename):
         except:
             typ, value, traceback = sys.exc_info()
             print( "FATAL: error creating initial version file " + value.strerror )
-            print( traceback )
+            #print( traceback )
             sys.exit(-1)
 
      
