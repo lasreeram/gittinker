@@ -132,7 +132,7 @@ def change_versions_for_packages(setOfPackages):
         if( retCode == 0 ):
             #print(retStr)
             pathobj = Path(filename)
-            if( !pathobj.exists() ):
+            if( not pathobj.exists() ):
                 createNewVersionFile(packageName, filename)
                 continue
 
