@@ -15,6 +15,8 @@ def print_help():
 def extractVersionNumbersFromDiff( diffStr ):
     #print( diffStr )
     lines = diffStr.split("\n")
+    prevVersion = "?.?.?"
+    currentVersion = "?.?.?"
     for line in lines:
         if( line == '' ):
              continue
@@ -31,11 +33,11 @@ def extractVersionNumbersFromDiff( diffStr ):
         if( line.startswith("/") ):
              continue
         if( line.startswith("-") and len(line) < 6 ):
-             prevVersion = "new file"
+             prevVersion = "?.?.?"
         elif( line.startswith("-") and line[1].isdigit() ):
              prevVersion = line.strip("-")
         if( line.startswith("+") and len(line) < 6 ):
-             currentVersion = "new file"
+             currentVersion = "?.?.?"
         elif( line.startswith("+") and line[1].isdigit() ):
              currentVersion = line.strip("+")
 
