@@ -110,9 +110,9 @@ def createNewVersionFile(packageName, filename):
             userValueInt = int(userValue)
         try:
             fd = open(filename, "w+")
-            if( userIntValue == 0 ):
+            if( userValueInt == 0 ):
                 fd.write( "0.0.0" )
-            elif( userIntValue == 1 ):
+            elif( userValueInt == 1 ):
                 fd.write( "0.1.0" )
             else:
                 fd.write( "1.0.0" )
