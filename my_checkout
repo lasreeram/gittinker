@@ -20,7 +20,7 @@ def checkout_feature(feature):
     git_checkout_cmd = ["git", "checkout", feature]
     retCode,retErr,retStr = execgit.execCommand(git_checkout_cmd)
 
-def build_links_to_from_sdir_to_packages():
+def build_links_from_sdir_to_packages():
     if 'MY_SOURCE_DIR' not in os.environ:
         print("INFO: please set the environment variable MY_SOURCE_DIR to point to your source directory")
         sys.exit(1)
@@ -46,7 +46,7 @@ def main():
     #do work
     fetch_all_features()
     checkout_feature(feature)
-    build_links_to_from_sdir_to_packages()
+    build_links_from_sdir_to_packages()
 
     print( "Feature " + feature + " is checked out!" ) 
 
